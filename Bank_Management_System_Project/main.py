@@ -1,6 +1,6 @@
 from bank import Bank
 class BankManagement:
-    def main():
+    def main()->None:
      account = None
      while True:
         print("1. Create account")
