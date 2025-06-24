@@ -1,3 +1,4 @@
+import cx_Oracle
 import logging
 logging.basicConfig(level=logging.INFO,format="%(asctime)s-%(levelname)s-%(message)s")
 class Bank:
@@ -51,4 +52,48 @@ class Bank:
             account_no = f.readline().strip() 
             balance= float(f.readline().strip()) 
             return Bank(name, age, branch, account_no, balance) # it is returning the object with the values
-
+    def database(self)-> None:
+        """saving the data in oracle database"""
+        try:
+            dsn = cx_Oracle.makedsn("localhost" ,1521 ,service_name = "orcl")
+            con = cx_Oracle.connect(user = "tharun",password = "tharun",dsn=dsn)
+            c = con.cursor()
+            c.execute(""" insert into bank_management(name,age,branch,account_no,balance) values(:1, :2, :3, :4, :5)""",(self.__name, self.__age,self.__branch, self.__account_no,self.__balance))
+            con.commit()
+            c.close()
+            con.close()
+            logging.info("Your bank account successfully created")
+        except Exception as e:
+            logging.error(f"Enter valid details {e}")
+    @staticmethod
+    def fetch_details(account_no: str)-> "Bank | None":
+        """fetches data from the oracle database"""
+        try:
+            dsn=cx_Oracle.makedsn("localhost",1521,service_name="orcl")
+            con=cx_Oracle.connect(user="tharun",password="tharun",dsn=dsn)
+            c=con.cursor()
+            c.execute(""" select name, age, branch, account_no, balance from bank_management where account_no= :1 """,(account_no.strip(),))
+            row=c.fetchone() #fetches the maching row
+            c.close()
+            con.close()
+            if row:
+                name, age, branch, acc_no, balance = row
+                return Bank(name, age, branch, acc_no, balance)
+            else:
+                logging.error("no account found")
+                return None
+        except Exception as e:
+            logging.error(f"invalid data {e}")
+            return None
+    def update_balance(self) -> None:
+        try:
+            dsn=cx_Oracle.makedsn("localhost",1521,service_name="orcl")
+            con=cx_Oracle.connect(user="tharun",password="tharun",dsn=dsn)
+            c=con.cursor()
+            c.execute("""update bank_management set balance = :1 where account_no= :2""",(self.__balance,self.__account_no))
+            con.commit()
+            c.close()
+            con.close()
+            logging.info("your balance updated")
+        except Exception as e:
+            logging.error(f"invalid {e}")
