@@ -1,5 +1,6 @@
 from bank import Bank
 import pytest
+
 def test_getter():
     bank = Bank("tharun",22,"hyderabad","123456",1000.0)
     b = bank.getter()
