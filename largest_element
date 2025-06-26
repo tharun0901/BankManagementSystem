@@ -1,0 +1,11 @@
+def largest_element(arr):
+    if not arr:
+        return "Empty array"
+    le=arr[0]
+    for element in arr:
+        if element>arr[0]:
+            le=element
+    return le
+arr=[10,20,30,99]
+r=largest_element(arr)
+print(r)
