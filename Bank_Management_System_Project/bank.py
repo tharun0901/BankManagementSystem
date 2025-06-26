@@ -86,6 +86,7 @@ class Bank:
             logging.error(f"invalid data {e}")
             return None
     def update_balance(self) -> None:
+        """updating the balance in database"""
         try:
             dsn=cx_Oracle.makedsn("localhost",1521,service_name="orcl")
             con=cx_Oracle.connect(user="tharun",password="tharun",dsn=dsn)
